@@ -35,7 +35,7 @@ export default function PageContainer({
         <div className="w-full flex flex-row justify-between items-center">
           {/* heading */}
           <div className="w-full flex flex-col space-y-1">
-            <p className="text-2xl font-medium">{title}</p>
+            <p className="text-2xl">{title}</p>
             <p className="text-theme-light-gray">{description}</p>
           </div>
         </div>

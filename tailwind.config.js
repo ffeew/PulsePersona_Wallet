@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
-
-const plugin = require("tailwindcss/plugin");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
@@ -14,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Cera", ...defaultTheme.fontFamily.sans],
+        sans: ["Quicksand", ...defaultTheme.fontFamily.sans],
       },
       colors: {
         theme: {
@@ -37,50 +35,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    plugin(function ({ addBase }) {
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "100",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProThinRegular.woff)",
-        },
-      });
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "200",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProLightRegular.woff)",
-        },
-      });
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "300",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProRegular.woff)",
-        },
-      });
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "400",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProMediumRegular.woff)",
-        },
-      });
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "500",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProBold.woff)",
-        },
-      });
-      addBase({
-        "@font-face": {
-          fontFamily: "Cera",
-          fontWeight: "600",
-          src: "url(/fonts/FONTSPRINGDEMO-CeraRoundProBlackRegular.woff)",
-        },
-      });
-    }),
-  ],
+  plugins: [],
 };

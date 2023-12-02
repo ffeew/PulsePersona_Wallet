@@ -64,26 +64,26 @@ export default function VerificationCredentials() {
 
               <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-medium-gray rounded-xl">
                 <div className="flex flex-col justify-center items-start">
-                  <p className="font-light text-theme-light-gray">Issuer</p>
-                  <p className="text-lg">{selectedVc.title}</p>
+                  <p className="text-theme-light-gray text-sm">Issuer</p>
+                  <p className="">{selectedVc.title}</p>
                 </div>
                 <div className="flex flex-col justify-center items-start">
-                  <p className="font-light text-theme-light-gray">Address</p>
-                  <p className="text-lg">asdfghjkl</p>
+                  <p className="text-theme-light-gray text-sm">Address</p>
+                  <p className="">asdfghjkl</p>
                 </div>
                 <div className="flex flex-col justify-center items-start">
-                  <p className="font-light text-theme-light-gray">Date</p>
-                  <p className="text-lg">23 November 2023</p>
+                  <p className="text-theme-light-gray text-sm">Date</p>
+                  <p className="">23 November 2023</p>
                 </div>
                 <div className="flex flex-col justify-center items-start">
-                  <p className="font-light text-theme-light-gray">Time</p>
-                  <p className="text-lg">11:53AM</p>
+                  <p className="text-theme-light-gray text-sm">Time</p>
+                  <p className="">11:53AM</p>
                 </div>
                 <div className="w-full flex flex-row justify-end items-center space-x-4">
-                  <button className="py-3 px-6 rounded-xl bg-theme-light-gray/20">
+                  <button className="py-3 px-6 rounded-xl text-sm bg-theme-light-gray/20">
                     <p>Download</p>
                   </button>
-                  <button className="py-3 px-10 rounded-xl bg-red-500">
+                  <button className="py-3 px-8 rounded-xl text-sm bg-red-500">
                     <p>Delete</p>
                   </button>
                 </div>
@@ -107,7 +107,7 @@ export default function VerificationCredentials() {
                 />
               </div>
               <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-light-gray/20 rounded-xl">
-                <p className="text-lg">3 Results</p>
+                <p className="">{`${vcs.length} Results`}</p>
                 {vcs.map((vc, index) => (
                   <VcButton
                     key={index}
@@ -135,11 +135,17 @@ export default function VerificationCredentials() {
 function VcButton({ vc, onClick }: VcButtonProps) {
   return (
     <button
-      className="w-full flex flex-col justify-center items-start px-8 py-5 space-y-2 bg-theme-light-gray/20 border-2 border-theme-medium-gray hover:border-theme-light-gray/40 hover:bg-theme-light-gray/30 rounded-xl"
+      className="w-full flex flex-col justify-center items-start px-8 py-7 space-y-6 bg-theme-dark-gray border-2 border-theme-dark-gray hover:border-theme-light-gray/30 hover:bg-opacity-80 rounded-xl"
       onClick={(e) => onClick && onClick(e, vc)}
     >
-      <p className="text-lg">{vc.title}</p>
-      <p className="text-theme-light-gray font-light text-sm">{vc.dateTime}</p>
+      <div className="flex flex-col justify-center items-start">
+        <p className="text-theme-light-gray text-sm">Issuer</p>
+        <p className="">{vc.title}</p>
+      </div>
+      <div className="flex flex-col justify-center items-start">
+        <p className="text-theme-light-gray text-sm">Issued Date</p>
+        <p className="">{vc.dateTime}</p>
+      </div>
     </button>
   );
 }

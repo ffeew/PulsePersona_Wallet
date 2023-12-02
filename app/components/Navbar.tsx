@@ -61,7 +61,7 @@ export default function Navbar() {
         {/* logo */}
         <div className="w-full flex flex-row justify-start items-center px-10 space-x-2">
           <Logo className="text-theme-white" />
-          <p className="font-medium">Pulse Persona</p>
+          <p>Pulse Persona</p>
         </div>
 
         {/* pages tab */}
