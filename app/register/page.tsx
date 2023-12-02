@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import QuestionCircle from "../assets/QuestionCircle";
 import Logo from "../assets/Logo";
 
 export default function Login() {
@@ -24,7 +25,12 @@ export default function Login() {
         </div>
         <div className="w-96 flex flex-col justify-center items-center space-y-5 p-7 bg-[#36373C] drop-shadow-xl rounded-3xl">
           <div className="w-full flex flex-col space-y-2 justify-center items-start">
-            <p className="font-medium">DID</p>
+            <div className="flex flex-row justify-center items-center space-x-2">
+              <p className="font-medium">Service Endpoint</p>
+              <button>
+                <QuestionCircle className="w-4 h-auto text-theme-white" />
+              </button>
+            </div>
             <input
               type="text"
               className="w-full py-3 px-3 bg-[#2B2D31] rounded-lg"
@@ -43,15 +49,15 @@ export default function Login() {
             className="w-full flex justify-center items-center py-3 bg-theme-accent rounded-lg"
             onClick={handleAuthentication}
           >
-            <p className="text-white font-medium">Login</p>
+            <p className="text-white font-medium">Register</p>
           </button>
           <p className="text-white text-sm font-light">
-            Do not have an account?{" "}
+            Already have an account?{" "}
             <span
               className="pressable underline"
-              onClick={() => router.push("/register")}
+              onClick={() => router.push("/login")}
             >
-              Register
+              Login
             </span>
           </p>
         </div>

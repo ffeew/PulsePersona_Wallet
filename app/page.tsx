@@ -6,6 +6,11 @@ import PageContainer from "./components/PageContainer";
 import ChevronRight from "./assets/ChevronRight";
 import ErrorSadFace from "./assets/ErrorSadFace";
 
+interface tab {
+  value: string;
+  display: string;
+}
+
 interface Vc {
   title: string;
   dateTime: string;
@@ -19,7 +24,10 @@ interface VcButtonProps {
 export default function VerificationCredentials() {
   const [inputFocus, setInputFocus] = useState<boolean>(false);
   const [selectedVc, setSelectedVc] = useState<Vc | null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>("others");
+  const [selectedTab, setSelectedTab] = useState<tab>({
+    value: "others",
+    display: "Other VCs",
+  });
 
   const vcs = [
     {
@@ -38,9 +46,9 @@ export default function VerificationCredentials() {
         { value: "others", display: "Other VCs" },
         { value: "personal", display: "Personal VC" },
       ]}
-      onChangeTab={(tab) => setSelectedTab(tab)}
+      onChangeTab={(tab: tab) => setSelectedTab(tab)}
     >
-      {selectedTab === "others" ? (
+      {selectedTab.value === "others" ? (
         <div className="w-full flex flex-col justify-center items-start space-y-5">
           {selectedVc ? (
             <>

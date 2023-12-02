@@ -11,7 +11,9 @@ export default function LayoutProvider({ children }: LayoutProviderProps) {
   const pathname = usePathname();
   return (
     <>
-      {pathname !== "/login" && pathname !== "/logout" && <Navbar />}
+      {pathname !== "/login" &&
+        pathname !== "/logout" &&
+        pathname !== "/register" && <Navbar />}
       {children}
     </>
   );

@@ -10,7 +10,7 @@ interface PageContainerProps {
   description: string;
   children: React.ReactNode;
   tabs: Array<tab>;
-  onChangeTab: (tab: string) => void;
+  onChangeTab: (tab: tab) => void;
 }
 
 export default function PageContainer({
@@ -20,7 +20,10 @@ export default function PageContainer({
   tabs,
   onChangeTab,
 }: PageContainerProps) {
-  const [selectedTab, setSelectedTab] = useState("others");
+  const [selectedTab, setSelectedTab] = useState<tab>({
+    value: "others",
+    display: "Other VCs",
+  });
 
   useEffect(() => {
     onChangeTab && onChangeTab(selectedTab);
@@ -45,10 +48,10 @@ export default function PageContainer({
               <button
                 key={index}
                 className="py-3 space-y-3"
-                onClick={() => setSelectedTab(tab.value)}
+                onClick={() => setSelectedTab(tab)}
               >
                 <p className="px-5">{tab.display}</p>
-                {selectedTab === tab.value ? (
+                {selectedTab.value === tab.value ? (
                   <div className="w-full h-[2px] bg-theme-white rounded-full"></div>
                 ) : (
                   <div className="w-full h-[2px] bg-theme-medium-gray rounded-full"></div>
