@@ -7,7 +7,7 @@ import Logo from "../assets/Logo";
 
 export default function Login() {
   const router = useRouter();
-  const [did, setDid] = useState("");
+  const [endpoint, setEndpoint] = useState("");
   const [key, setKey] = useState("");
 
   const handleAuthentication = () => {
@@ -34,7 +34,7 @@ export default function Login() {
             <input
               type="text"
               className="w-full py-3 px-3 bg-[#2B2D31] rounded-lg"
-              onChange={(e) => setDid(e.target.value)}
+              onChange={(e) => setEndpoint(e.target.value)}
             />
           </div>
           <div className="w-full flex flex-col space-y-2 justify-center items-start">
