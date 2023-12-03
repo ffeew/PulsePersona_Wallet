@@ -194,7 +194,7 @@ export default function VerificationCredentials() {
               </div>
               <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-light-gray/20 rounded-xl">
                 <p className="">{`${vcs.length} Results`}</p>
-                {vcs.map((vc, index) => (
+                {vcs.map((vc: any, index: any) => (
                   <VcButton
                     key={index}
                     vc={vc}
