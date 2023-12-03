@@ -48,13 +48,18 @@ type VerificationCredentialDocument = {
 };
 
 export default function VerificationCredentials() {
+  const tabs = [
+    { value: "others", display: "Other VCs" },
+    { value: "personal", display: "Personal VC" },
+  ];
+
+  const importRef = useRef<any | null>(null);
   const [inputFocus, setInputFocus] = useState<boolean>(false);
+  const [selectedTab, setSelectedTab] = useState<tab>(tabs[0]);
   const [selectedVc, setSelectedVc] =
     useState<VerificationCredentialDocument | null>(null);
-  const [selectedTab, setSelectedTab] = useState<tab>({
-    value: "others",
-    display: "Other VCs",
-  });
+  const [personalVc, setPersonalVc] = useState<any>(null);
+  const [ownedVcs, setOwnedVcs] = useState<any>([]);
 
   const generatePersonalVc = async () => {
     const did = localStorage.getItem("did");
@@ -88,7 +93,6 @@ export default function VerificationCredentials() {
         email: didDocument.service[0].serviceEndpoint,
       },
     };
-    setPersonalVc(vcDocument);
     console.log(vcDocument);
 
     // obtain hash of vcDocument
@@ -100,6 +104,7 @@ export default function VerificationCredentials() {
 
     try {
       // write VC to local storage
+      setPersonalVc(vcDocument);
       localStorage.setItem("personalVc", JSON.stringify(vcDocument));
       const tx = await contractWithSigner.issueClaim(
         did,
@@ -115,27 +120,21 @@ export default function VerificationCredentials() {
     }
   };
 
-  const [vcs, setVcs] = useState<any>([]);
-  const [personalVc, setPersonalVc] = useState<any>(null);
-  const importRef = useRef<any | null>(null);
   const handleImport = (file: any) => {
-    setVcs([
+    setOwnedVcs([
       {
-        title: "Singapore University of Technology and Design",
-        dateTime: "11:53AM, 23 November 2023",
+        issuer: "Singapore University of Technology and Design",
+        issuanceDate: "11:53AM, 23 November 2023",
       },
     ]);
   };
 
   return (
     <PageContainer
+      tabs={tabs}
       showImportButton
       title="Verfiable Credentials"
       description="Manage your VCs"
-      tabs={[
-        { value: "others", display: "Other VCs" },
-        { value: "personal", display: "Personal VC" },
-      ]}
       onClickImport={() => importRef.current.click()}
       onChangeTab={(tab: tab) => setSelectedTab(tab)}
     >
@@ -179,8 +178,10 @@ export default function VerificationCredentials() {
                 />
               </div>
               <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-light-gray/20 rounded-xl">
-                <p className="">{`${vcs.length} Results`}</p>
-                {vcs.map((vc: any, index: any) => (
+                <p className="">{`${ownedVcs.length} ${
+                  ownedVcs.length === 1 ? "Result" : "Results"
+                }`}</p>
+                {ownedVcs.map((vc: any, index: any) => (
                   <VcButton
                     key={index}
                     vc={vc}

@@ -7,7 +7,7 @@ import Copy from "../assets/Copy";
 
 export default function Settings() {
   return (
-    <PageContainer title="Settings" description="Manage your account">
+    <PageContainer title="Settings" description="Your account settings">
       <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-medium-gray rounded-xl">
         <div className="flex flex-col justify-center items-start">
           <p className="text-theme-light-gray text-sm">DID</p>
