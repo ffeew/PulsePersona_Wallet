@@ -73,7 +73,37 @@ export default function Login() {
 	const handleDidDocumentUploadToIpfs = async (
 		didDocument: DidDocumentData
 	) => {
-		// TODO: upload to ipfs
+		try {
+			const didDocumentString = JSON.stringify(didDocument);
+			const blob = new Blob([didDocumentString], { type: "application/json" });
+			const fileName = `${didDocument.id}.json`;
+			const fileToUpload = new File([blob], fileName, {
+				type: "application/json",
+				lastModified: Date.now(),
+			});
+			const jwtRes = await fetch("/api/files", { method: "POST" });
+			const JWT = await jwtRes.text();
+			const formData = new FormData();
+			formData.append("file", fileToUpload, fileToUpload.name);
+
+			const res = await fetch(
+				"https://api.pinata.cloud/pinning/pinFileToIPFS",
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${JWT}`,
+					},
+					body: formData,
+				}
+			);
+			const json = await res.json();
+			const { IpfsHash } = json;
+			console.log(IpfsHash);
+			return IpfsHash;
+		} catch (e) {
+			console.error(e);
+			alert("Trouble uploading file");
+		}
 	};
 
 	const handleCredentialStorage = async (
@@ -112,10 +142,12 @@ export default function Login() {
 
 		// register the did document hash
 		try {
+			const ipfsCid = handleDidDocumentUploadToIpfs(didDocument);
 			handleCredentialStorage(did, didDocument, privateKey);
 			const tx = await contractWithSigner.registerIdentity(
 				did,
-				didDocumentHash
+				didDocumentHash,
+				ipfsCid
 			);
 			await tx.wait();
 			console.log("transaction ", tx);
