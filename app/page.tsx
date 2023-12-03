@@ -129,6 +129,7 @@ export default function VerificationCredentials() {
 
   return (
     <PageContainer
+      showImportButton
       title="Verfiable Credentials"
       description="Manage your VCs"
       tabs={[
