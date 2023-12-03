@@ -1,8 +1,9 @@
 "use client";
 
+import lodash from "lodash";
 import { ethers } from "ethers";
 import { randomBytes } from "crypto";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { getContractWithSignerInLocalStorage } from "./smartContract";
 import MagnifyingGlass from "./assets/MagnifyingGlass";
@@ -28,8 +29,14 @@ interface VcDetailsProps {
   vc: VerificationCredentialDocument;
   showDownloadButton?: boolean;
   showDeleteButton?: boolean;
-  onClickDownload?: (e: React.MouseEvent<HTMLElement>) => void;
-  onClickDelete?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClickDownload?: (
+    e: React.MouseEvent<HTMLElement>,
+    vc: VerificationCredentialDocument
+  ) => void;
+  onClickDelete?: (
+    e: React.MouseEvent<HTMLElement>,
+    vc: VerificationCredentialDocument
+  ) => void;
 }
 
 type VerificationCredentialDocument = {
@@ -121,13 +128,36 @@ export default function VerificationCredentials() {
   };
 
   const handleImport = (file: any) => {
-    setImportedVcs([
-      {
-        issuer: "Singapore University of Technology and Design",
-        issuanceDate: "11:53AM, 23 November 2023",
-      },
-    ]);
+    const extension = file?.name.split(".").pop();
+    if (extension !== "jsonld") {
+      alert(
+        "Invalid File Type. We only accept JSON-LD files. Please Try Again."
+      );
+    } else {
+      const fileReader = new FileReader();
+      fileReader.readAsText(file, "UTF-8");
+      fileReader.onload = (e: any) => {
+        const rawContent = e.target.result;
+        const importedVcsCopy = [...importedVcs];
+        importedVcsCopy.push(JSON.parse(rawContent));
+        setImportedVcs(importedVcsCopy);
+        localStorage.setItem("importedVcs", JSON.stringify(importedVcsCopy));
+      };
+    }
   };
+
+  useEffect(() => {
+    const rawData = localStorage.getItem("importedVcs");
+    if (rawData) {
+      const existingImportedVcs = JSON.parse(rawData);
+      setImportedVcs(existingImportedVcs);
+    }
+    const rawPersonalData = localStorage.getItem("personalVc");
+    if (rawPersonalData) {
+      const existingPersonalVc = JSON.parse(rawPersonalData);
+      setPersonalVc(existingPersonalVc);
+    }
+  }, []);
 
   return (
     <PageContainer
@@ -158,7 +188,33 @@ export default function VerificationCredentials() {
                   <p className="text-theme-white">Back</p>
                 </button>
               </div>
-              <VcDetails showDeleteButton showDownloadButton vc={selectedVc} />
+              <VcDetails
+                showDeleteButton
+                showDownloadButton
+                vc={selectedVc}
+                onClickDelete={(e, vc) => {
+                  const importedVcsCopy = [...importedVcs];
+                  lodash.remove(importedVcsCopy, (e: any) => vc === e);
+                  setImportedVcs(importedVcsCopy);
+                  localStorage.setItem(
+                    "importedVcs",
+                    JSON.stringify(importedVcsCopy)
+                  );
+                  setSelectedVc(null);
+                }}
+                onClickDownload={(e, vc) => {
+                  const url = window.URL.createObjectURL(
+                    new Blob([JSON.stringify(vc)], {
+                      type: "application/ld+json",
+                    })
+                  );
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute("download", `${vc.name}.jsonld`);
+                  document.body.appendChild(link);
+                  link.click();
+                }}
+              />
             </>
           ) : (
             <>
@@ -193,7 +249,27 @@ export default function VerificationCredentials() {
           )}
         </div>
       ) : personalVc ? (
-        <VcDetails showDeleteButton showDownloadButton vc={personalVc} />
+        <VcDetails
+          showDeleteButton
+          showDownloadButton
+          vc={personalVc}
+          onClickDelete={(e, vc) => {
+            setPersonalVc(null);
+            localStorage.removeItem("personalVc");
+          }}
+          onClickDownload={(e, vc) => {
+            const url = window.URL.createObjectURL(
+              new Blob([JSON.stringify(vc)], {
+                type: "application/ld+json",
+              })
+            );
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `${vc.name}.jsonld`);
+            document.body.appendChild(link);
+            link.click();
+          }}
+        />
       ) : (
         <div className="w-full flex flex-col justify-center items-center p-5 space-y-5 bg-theme-medium-gray rounded-xl">
           <ErrorSadFace className="w-44 h-auto text-theme-white" />
@@ -211,20 +287,36 @@ export default function VerificationCredentials() {
 }
 
 function VcButton({ vc, onClick }: VcButtonProps) {
+  const [isCopy, setIsCopy] = useState(false);
+
   return (
-    <button
-      className="w-full flex flex-col justify-center items-start px-8 py-7 space-y-6 bg-theme-dark-gray border-2 border-theme-dark-gray hover:border-theme-light-gray/30 hover:bg-opacity-80 rounded-xl"
-      onClick={(e) => onClick && onClick(e, vc)}
+    <div
+      className="cursor-pointer w-full flex flex-col justify-center items-start px-8 py-7 space-y-6 bg-theme-dark-gray border-2 border-theme-dark-gray hover:border-theme-light-gray/30 hover:bg-opacity-80 rounded-xl"
+      onClick={(e) => !isCopy && onClick && onClick(e, vc)}
     >
-      <div className="flex flex-col justify-center items-start">
-        <p className="text-theme-light-gray text-sm">Issuer</p>
-        <p className="">{vc.issuer}</p>
+      <div
+        className="flex flex-col justify-center items-start"
+        onMouseEnter={() => setIsCopy(true)}
+        onMouseLeave={() => setIsCopy(false)}
+      >
+        <p className="text-theme-light-gray text-sm">DID</p>
+        <div className="flex flex-row space-x-4">
+          <p className="">{vc.issuer}</p>
+          <CopyToClipboard
+            text={vc.issuer}
+            onCopy={() => alert("Copied to clipboard")}
+          >
+            <button>
+              <Copy className="w-4 h-auto text-theme-white" />
+            </button>
+          </CopyToClipboard>
+        </div>
       </div>
       <div className="flex flex-col justify-center items-start">
         <p className="text-theme-light-gray text-sm">Issued Date</p>
         <p className="">{vc.issuanceDate}</p>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -287,7 +379,7 @@ function VcDetails({
         {showDownloadButton && (
           <button
             className="py-3 px-6 rounded-xl text-sm bg-theme-light-gray/20"
-            onClick={(e) => onClickDownload && onClickDownload(e)}
+            onClick={(e) => onClickDownload && onClickDownload(e, vc)}
           >
             <p>Download</p>
           </button>
@@ -295,7 +387,7 @@ function VcDetails({
         {showDeleteButton && (
           <button
             className="py-3 px-8 rounded-xl text-sm bg-red-500"
-            onClick={(e) => onClickDelete && onClickDelete(e)}
+            onClick={(e) => onClickDelete && onClickDelete(e, vc)}
           >
             <p>Delete</p>
           </button>
