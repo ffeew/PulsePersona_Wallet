@@ -10,6 +10,13 @@ export const provider = ethers.getDefaultProvider(
 export const contract = new ethers.Contract(contractAddress, abi, provider);
 
 // Requires the private key to be stored in localStorage
+export const getContractWithSigner = async (privateKey: string) => {
+	const wallet = new ethers.Wallet(privateKey, provider);
+	const contractWithSigner = new ethers.Contract(contractAddress, abi, wallet);
+	return contractWithSigner;
+};
+
+// Requires the private key to be stored in localStorage
 export const getContractWithSignerInLocalStorage = async () => {
 	// check if privateKey is stored in localStorage
 	if (!localStorage.getItem("privateKey")) {
@@ -18,6 +25,6 @@ export const getContractWithSignerInLocalStorage = async () => {
 
 	const privateKey = localStorage.getItem("privateKey");
 	const wallet = new ethers.Wallet(privateKey!, provider);
-	const contractWithSigner = contract.connect(wallet);
+	const contractWithSigner = new ethers.Contract(contractAddress, abi, wallet);
 	return contractWithSigner;
 };

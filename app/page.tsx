@@ -96,6 +96,7 @@ export default function VerificationCredentials() {
 				vcDocument.id,
 				vcDocumentHash
 			);
+			console.log("tx ", tx);
 			await tx.wait();
 			alert("VC successfully generated!");
 		} catch (e) {

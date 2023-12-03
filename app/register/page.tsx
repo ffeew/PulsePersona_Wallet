@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import QuestionCircle from "../assets/QuestionCircle";
 import Logo from "../assets/Logo";
-import { contract, provider } from "../smartContract";
+import { contract, getContractWithSigner, provider } from "../smartContract";
 import { ethers, SigningKey } from "ethers";
 import { randomBytes } from "crypto";
 import { BytesLike } from "ethers";
@@ -120,7 +120,6 @@ export default function Login() {
 	const handleRegistration = async () => {
 		const did = "did:pulsepersona:" + randomBytes(16).toString("hex");
 		console.log(did);
-		const wallet = new ethers.Wallet(key, provider);
 
 		// ensure that the private key begins with 0x
 		const privateKey = key.startsWith("0x") ? key : "0x" + key;
@@ -138,7 +137,7 @@ export default function Login() {
 		console.log("did document hash", didDocumentHash);
 
 		// connect the wallet to the contract
-		const contractWithSigner = contract.connect(wallet);
+		const contractWithSigner = await getContractWithSigner(privateKey);
 
 		// register the did document hash
 		try {
