@@ -70,12 +70,21 @@ export default function Login() {
 		return didDocument;
 	};
 
+	const handleDidDocumentUploadToIpfs = async (
+		didDocument: DidDocumentData
+	) => {
+		// TODO: upload to ipfs
+	};
+
 	const handleCredentialStorage = async (
 		did: string,
 		didDocument: DidDocumentData,
 		privateKey: BytesLike
 	) => {
-		// store the data locally
+		localStorage.clear();
+		localStorage.setItem("did", did);
+		localStorage.setItem("didDocument", JSON.stringify(didDocument));
+		localStorage.setItem("privateKey", ethers.hexlify(privateKey));
 	};
 
 	const handleRegistration = async () => {
@@ -103,14 +112,13 @@ export default function Login() {
 
 		// register the did document hash
 		try {
+			handleCredentialStorage(did, didDocument, privateKey);
 			const tx = await contractWithSigner.registerIdentity(
 				did,
 				didDocumentHash
 			);
 			await tx.wait();
 			console.log("transaction ", tx);
-			handleCredentialStorage(did, didDocument, privateKey);
-
 			// send user to home page
 			router.push("/");
 		} catch (e) {
