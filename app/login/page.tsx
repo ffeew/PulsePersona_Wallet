@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import QuestionCircle from "../assets/QuestionCircle";
 import Logo from "../assets/Logo";
 
 export default function Login() {
   const router = useRouter();
+  const [showTooltip, setShowTooltip] = useState(false);
   const [did, setDid] = useState("");
   const [key, setKey] = useState("");
 
@@ -31,7 +33,26 @@ export default function Login() {
             />
           </div>
           <div className="w-full flex flex-col space-y-2 justify-center items-start">
-            <p className="">Private key</p>
+            <div className="relative">
+              <div className="flex flex-row justify-center items-center space-x-2">
+                <p className="">Private key</p>
+                <button
+                  onMouseEnter={() => setShowTooltip(true)}
+                  onMouseLeave={() => setShowTooltip(false)}
+                >
+                  <QuestionCircle className="w-4 h-auto text-theme-white" />
+                </button>
+              </div>
+              {showTooltip && (
+                <div className="w-full absolute top-0 pl-3 translate-x-full">
+                  <div className="w-48 p-3 bg-theme-medium-gray rounded-2xl drop-shadow-lg">
+                    <p className="text-xs">
+                      Your private key must be an ethereum wallet
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
             <input
               type="password"
               placeholder="Enter Private Key"

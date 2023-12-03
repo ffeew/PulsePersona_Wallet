@@ -10,6 +10,7 @@ interface PageContainerProps {
   description: string;
   children: React.ReactNode;
   tabs: Array<tab>;
+  onClickImport: () => void;
   onChangeTab: (tab: tab) => void;
 }
 
@@ -18,6 +19,7 @@ export default function PageContainer({
   description,
   children,
   tabs,
+  onClickImport,
   onChangeTab,
 }: PageContainerProps) {
   const [selectedTab, setSelectedTab] = useState<tab>({
@@ -38,6 +40,12 @@ export default function PageContainer({
             <p className="text-2xl">{title}</p>
             <p className="text-theme-light-gray">{description}</p>
           </div>
+          <button
+            className="py-3 px-6 rounded-xl text-sm bg-theme-light-gray/20"
+            onClick={() => onClickImport && onClickImport()}
+          >
+            <p className="whitespace-nowrap">Import VC</p>
+          </button>
         </div>
 
         <div className="w-full flex flex-col pt-[40px]">
