@@ -116,6 +116,7 @@ export default function Login() {
     localStorage.setItem("did", did);
     localStorage.setItem("didDocument", JSON.stringify(didDocument));
     localStorage.setItem("privateKey", ethers.hexlify(privateKey));
+    localStorage.setItem("serviceEndpoint", endpoint);
   };
 
   const handleRegistration = async () => {
