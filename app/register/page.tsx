@@ -7,6 +7,7 @@ import Logo from "../assets/Logo";
 import { contract, provider } from "../smartContract";
 import { ethers, SigningKey } from "ethers";
 import { randomBytes } from "crypto";
+import { BytesLike } from "ethers";
 
 type Service = {
 	id: string;
@@ -69,7 +70,15 @@ export default function Login() {
 		return didDocument;
 	};
 
-	const handleRegistration = () => {
+	const handleCredentialStorage = async (
+		did: string,
+		didDocument: DidDocumentData,
+		privateKey: BytesLike
+	) => {
+		// store the data locally
+	};
+
+	const handleRegistration = async () => {
 		const did = "did:pulsepersona:" + randomBytes(16).toString("hex");
 		console.log(did);
 		const wallet = new ethers.Wallet(key, provider);
@@ -77,11 +86,33 @@ export default function Login() {
 		// ensure that the private key begins with 0x
 		const privateKey = key.startsWith("0x") ? key : "0x" + key;
 		const publicKey = SigningKey.computePublicKey(privateKey);
-		console.log("public key", publicKey);
+		console.log("public key ", publicKey);
 		const publicKeyBase58 = ethers.encodeBase58(publicKey);
-		console.log(publicKeyBase58);
+		console.log("public key base58", publicKeyBase58);
+
 		// generate did document
-		const didDocument = generateDidDocument(endpoint, publicKeyBase58);
+		const didDocument = await generateDidDocument(endpoint, publicKeyBase58);
+
+		// obtain hash of did document
+		const didDocumentBytes = ethers.toUtf8Bytes(JSON.stringify(didDocument));
+		const didDocumentHash = ethers.keccak256(didDocumentBytes);
+		console.log("did document hash", didDocumentHash);
+
+		// connect the wallet to the contract
+		const contractWithSigner = contract.connect(wallet);
+
+		// register the did document hash
+		try {
+			const tx = await contractWithSigner.registerIdentity(
+				did,
+				didDocumentHash
+			);
+			await tx.wait();
+			console.log("transaction ", tx);
+			handleCredentialStorage(did, didDocument, privateKey);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	return (
