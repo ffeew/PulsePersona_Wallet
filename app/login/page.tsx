@@ -1,18 +1,66 @@
 "use client";
 
+import { ethers } from "ethers";
 import { useState } from "react";
+import { BytesLike } from "ethers";
+import { provider } from "../smartContract";
 import { useRouter } from "next/navigation";
 import QuestionCircle from "../assets/QuestionCircle";
 import Logo from "../assets/Logo";
 
+type Service = {
+  id: string;
+  type: string;
+  serviceEndpoint: string;
+};
+
+type VerificationMethod = {
+  id: string;
+  type: string;
+  controller: string;
+  publicKeyBase58: string;
+};
+
+type DidDocumentData = {
+  "@context": string[];
+  id: string;
+  controller: string;
+  verificationMethod: VerificationMethod[];
+  authentication: string[];
+  service: Service[];
+  created: string;
+  updated: string;
+};
+
 export default function Login() {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
+  const [privateKey, setPrivateKey] = useState("");
   const [did, setDid] = useState("");
-  const [key, setKey] = useState("");
 
-  const handleAuthentication = () => {
-    // do smething
+  const handleCredentialStorage = async (
+    did: string,
+    didDocument: DidDocumentData,
+    privateKey: BytesLike
+  ) => {
+    localStorage.clear();
+    localStorage.setItem("did", did);
+    localStorage.setItem("didDocument", JSON.stringify(didDocument));
+    localStorage.setItem("privateKey", ethers.hexlify(privateKey));
+  };
+
+  const handleAuthentication = async () => {
+    // get owner of did from smart contract
+
+    // check if did belongs to private key (create wallet and match the wallet address with the address returned)
+    const wallet = new ethers.Wallet(privateKey, provider);
+
+    // get ipfs address of didDocument from smart contract
+
+    // download file from pinata
+
+    // save to localstorage
+    // handleCredentialStorage(did, didDocument, privateKey);
   };
 
   return (
@@ -57,7 +105,7 @@ export default function Login() {
               type="password"
               placeholder="Enter Private Key"
               className="w-full py-3 px-3 bg-[#2B2D31] rounded-lg"
-              onChange={(e) => setKey(e.target.value)}
+              onChange={(e) => setPrivateKey(e.target.value)}
             />
           </div>
           <button
