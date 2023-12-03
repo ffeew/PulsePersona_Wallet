@@ -110,6 +110,9 @@ export default function Login() {
 			await tx.wait();
 			console.log("transaction ", tx);
 			handleCredentialStorage(did, didDocument, privateKey);
+
+			// send user to home page
+			router.push("/");
 		} catch (e) {
 			console.error(e);
 		}
