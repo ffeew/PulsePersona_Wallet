@@ -49,7 +49,7 @@ type VerificationCredentialDocument = {
 
 export default function VerificationCredentials() {
   const tabs = [
-    { value: "others", display: "Other VCs" },
+    { value: "others", display: "Imported VCs" },
     { value: "personal", display: "Personal VC" },
   ];
 
@@ -59,7 +59,7 @@ export default function VerificationCredentials() {
   const [selectedVc, setSelectedVc] =
     useState<VerificationCredentialDocument | null>(null);
   const [personalVc, setPersonalVc] = useState<any>(null);
-  const [ownedVcs, setOwnedVcs] = useState<any>([]);
+  const [importedVcs, setImportedVcs] = useState<any>([]);
 
   const generatePersonalVc = async () => {
     const did = localStorage.getItem("did");
@@ -121,7 +121,7 @@ export default function VerificationCredentials() {
   };
 
   const handleImport = (file: any) => {
-    setOwnedVcs([
+    setImportedVcs([
       {
         issuer: "Singapore University of Technology and Design",
         issuanceDate: "11:53AM, 23 November 2023",
@@ -178,10 +178,10 @@ export default function VerificationCredentials() {
                 />
               </div>
               <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-light-gray/20 rounded-xl">
-                <p className="">{`${ownedVcs.length} ${
-                  ownedVcs.length === 1 ? "Result" : "Results"
+                <p className="">{`${importedVcs.length} ${
+                  importedVcs.length === 1 ? "Result" : "Results"
                 }`}</p>
-                {ownedVcs.map((vc: any, index: any) => (
+                {importedVcs.map((vc: any, index: any) => (
                   <VcButton
                     key={index}
                     vc={vc}
