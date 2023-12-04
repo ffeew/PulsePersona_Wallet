@@ -8,7 +8,6 @@ import Copy from "../assets/Copy";
 export default function Settings() {
   const [showPrivateKey, setShowPrivateKey] = useState<any>(false);
   const [did, setDid] = useState<any>(null);
-  const [serviceEndpoint, setServiceEndpoint] = useState<any>(null);
   const [privateKey, setPrivateKey] = useState<any>(null);
 
   useEffect(() => {
@@ -16,11 +15,6 @@ export default function Settings() {
     if (rawDid) {
       const existingDid = rawDid;
       setDid(existingDid);
-    }
-    const rawEndpoint = localStorage.getItem("serviceEndpoint");
-    if (rawEndpoint) {
-      const existingEndpoint = rawEndpoint;
-      setServiceEndpoint(existingEndpoint);
     }
     const rawPrivateKey = localStorage.getItem("privateKey");
     if (rawPrivateKey) {
@@ -33,25 +27,21 @@ export default function Settings() {
     <PageContainer title="Settings" description="Your account settings">
       <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-medium-gray rounded-xl">
         <div className="flex flex-col justify-center items-start">
-          <p className="text-theme-light-gray text-sm">DID</p>
-          <div className="flex flex-row space-x-4">
-            <p className="">{did}</p>
+          <div className="flex flex-row justify-center items-center space-x-2">
+            <p className="text-theme-light-gray text-sm">DID</p>
             <CopyToClipboard
               text={did}
               onCopy={() => alert("Copied to clipboard")}
             >
-              <button>
+              <button className="p-2 bg-theme-dark-gray rounded-lg">
                 <Copy className="w-4 h-auto text-theme-white" />
               </button>
             </CopyToClipboard>
           </div>
+          <p className="">{did}</p>
         </div>
         <div className="flex flex-col justify-center items-start">
-          <p className="text-theme-light-gray text-sm">Email</p>
-          <p className="">{serviceEndpoint}</p>
-        </div>
-        <div className="flex flex-col justify-center items-start">
-          <div className="flex flex-row justify-center items-center space-x-4">
+          <div className="flex flex-row justify-center items-center space-x-2">
             <p className="text-theme-light-gray text-sm">Private Key</p>
             <button
               className="py-1 px-3 rounded-lg bg-theme-dark-gray"

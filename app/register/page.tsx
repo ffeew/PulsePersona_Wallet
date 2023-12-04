@@ -6,6 +6,7 @@ import QuestionCircle from "../assets/QuestionCircle";
 import Logo from "../assets/Logo";
 import { contract, getContractWithSigner, provider } from "../smartContract";
 import { ethers, SigningKey } from "ethers";
+import Loading from "../assets/Loading";
 import { randomBytes } from "crypto";
 import { BytesLike } from "ethers";
 
@@ -36,6 +37,7 @@ type DidDocumentData = {
 export default function Login() {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [endpoint, setEndpoint] = useState("");
   const [key, setKey] = useState("");
 
@@ -104,6 +106,7 @@ export default function Login() {
     } catch (e) {
       console.error(e);
       alert("Trouble uploading file");
+      setLoading(false);
     }
   };
 
@@ -120,6 +123,7 @@ export default function Login() {
   };
 
   const handleRegistration = async () => {
+    setLoading(true);
     const did = "did:pulsepersona:" + randomBytes(16).toString("hex");
     console.log(did);
 
@@ -154,8 +158,10 @@ export default function Login() {
       console.log("transaction ", tx);
       // send user to home page
       router.push("/");
+      setLoading(false);
     } catch (e) {
       console.error(e);
+      setLoading(false);
     }
   };
 
@@ -208,7 +214,11 @@ export default function Login() {
             className="w-full flex justify-center items-center py-3 bg-theme-accent rounded-lg"
             onClick={handleRegistration}
           >
-            <p className="text-white">Register</p>
+            {loading ? (
+              <Loading className="w-6 h-auto animate-spin text-white" />
+            ) : (
+              <p className="text-white">Register</p>
+            )}
           </button>
           <p className="text-white text-sm font-light">
             Already have an account?{" "}

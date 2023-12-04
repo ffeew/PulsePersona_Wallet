@@ -75,7 +75,6 @@ export default function VerificationCredentials() {
       alert("Please register a DID first");
       return;
     }
-
     const didDocument = JSON.parse(localStorage.getItem("didDocument") || "");
     // ensure that the user has a did document
     if (!didDocument) {
@@ -299,18 +298,18 @@ function VcButton({ vc, onClick }: VcButtonProps) {
         onMouseEnter={() => setIsCopy(true)}
         onMouseLeave={() => setIsCopy(false)}
       >
-        <p className="text-theme-light-gray text-sm">DID</p>
-        <div className="flex flex-row space-x-4">
-          <p className="">{vc.issuer}</p>
+        <div className="flex flex-row justify-center items-center space-x-2">
+          <p className="text-theme-light-gray text-sm">DID</p>
           <CopyToClipboard
             text={vc.issuer}
             onCopy={() => alert("Copied to clipboard")}
           >
-            <button>
+            <button className="p-2 bg-theme-medium-gray rounded-lg">
               <Copy className="w-4 h-auto text-theme-white" />
             </button>
           </CopyToClipboard>
         </div>
+        <p className="">{vc.issuer}</p>
       </div>
       <div className="flex flex-col justify-center items-start">
         <p className="text-theme-light-gray text-sm">Issued Date</p>
@@ -331,18 +330,18 @@ function VcDetails({
     <div className="w-full flex flex-col justify-center items-start p-5 space-y-5 bg-theme-medium-gray rounded-xl">
       {vc.issuer && (
         <div className="flex flex-col justify-center items-start">
-          <p className="text-theme-light-gray text-sm">DID</p>
-          <div className="flex flex-row space-x-4">
-            <p className="">{vc.issuer}</p>
+          <div className="flex flex-row justify-center items-center space-x-2">
+            <p className="text-theme-light-gray text-sm">DID</p>
             <CopyToClipboard
               text={vc.issuer}
               onCopy={() => alert("Copied to clipboard")}
             >
-              <button>
+              <button className="p-2 bg-theme-dark-gray rounded-lg">
                 <Copy className="w-4 h-auto text-theme-white" />
               </button>
             </CopyToClipboard>
           </div>
+          <p className="">{vc.issuer}</p>
         </div>
       )}
       {vc.issuanceDate && (

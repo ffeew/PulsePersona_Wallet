@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import abi from "../identityRegistryAbi.json";
 import QuestionCircle from "../assets/QuestionCircle";
 import pulsePersonaConfig from "../../pulsepersona.config.json";
+import Loading from "../assets/Loading";
 import Logo from "../assets/Logo";
 
 type Service = {
@@ -37,6 +38,7 @@ type DidDocumentData = {
 export default function Login() {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [key, setKey] = useState("");
   const [did, setDid] = useState("");
 
@@ -62,10 +64,12 @@ export default function Login() {
     } catch (e) {
       console.error(e);
       alert("Trouble getting didDocument");
+      setLoading(false);
     }
   };
 
   const handleAuthentication = async () => {
+    setLoading(true);
     const privateKey = key.startsWith("0x") ? key : "0x" + key;
     // get owner of did from smart contract
     const contractAddress = pulsePersonaConfig.smartContractAddress;
@@ -84,6 +88,7 @@ export default function Login() {
         console.log("Verification failed");
       }
     } catch (e) {
+      setLoading(false);
       console.error(e);
       return false;
     }
@@ -98,6 +103,7 @@ export default function Login() {
     handleCredentialStorage(did, didDocument, privateKey);
 
     router.push("/");
+    setLoading(false);
   };
 
   return (
@@ -149,7 +155,11 @@ export default function Login() {
             className="w-full flex justify-center items-center py-3 bg-theme-accent rounded-lg"
             onClick={handleAuthentication}
           >
-            <p className="text-white">Login</p>
+            {loading ? (
+              <Loading className="w-6 h-auto animate-spin text-white" />
+            ) : (
+              <p className="text-white">Login</p>
+            )}
           </button>
           <p className="text-white text-sm font-light">
             Do not have an account?{" "}
