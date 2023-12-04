@@ -5,7 +5,9 @@ import { useState } from "react";
 import { BytesLike } from "ethers";
 import { provider } from "../smartContract";
 import { useRouter } from "next/navigation";
+import abi from "../identityRegistryAbi.json";
 import QuestionCircle from "../assets/QuestionCircle";
+import pulsePersonaConfig from "../../pulsepersona.config.json";
 import Logo from "../assets/Logo";
 
 type Service = {
@@ -49,18 +51,50 @@ export default function Login() {
     localStorage.setItem("privateKey", ethers.hexlify(privateKey));
   };
 
+  const getDidDocument = async (ipfsCid: any) => {
+    try {
+      const res = await fetch(`https://gateway.pinata.cloud/ipfs/${ipfsCid}`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      console.log(json);
+      return json;
+    } catch (e) {
+      console.error(e);
+      alert("Trouble getting didDocument");
+    }
+  };
+
   const handleAuthentication = async () => {
     // get owner of did from smart contract
+    const contractAddress = pulsePersonaConfig.smartContractAddress;
+    const provider = ethers.getDefaultProvider(
+      pulsePersonaConfig.providerAddress
+    );
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+    try {
+      const ownerAddress = await contract.getDidOwner(did);
+      const wallet = new ethers.Wallet(privateKey, provider);
 
-    // check if did belongs to private key (create wallet and match the wallet address with the address returned)
-    const wallet = new ethers.Wallet(privateKey, provider);
+      // check if did belongs to private key (create wallet and match the wallet address with the address returned)
+      if (ownerAddress === wallet.address) {
+        console.log("Verification success");
+      } else {
+        console.log("Verification failed");
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
 
     // get ipfs address of didDocument from smart contract
+    const ipfsCid = await contract.getDidIpfsCid(did);
 
     // download file from pinata
+    const didDocument = await getDidDocument(ipfsCid);
 
     // save to localstorage
-    // handleCredentialStorage(did, didDocument, privateKey);
+    handleCredentialStorage(did, didDocument, privateKey);
   };
 
   return (

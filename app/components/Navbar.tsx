@@ -31,8 +31,11 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (!localStorage.getItem("did")) {
-    router.push("/login");
+  if (typeof window !== "undefined") {
+    const existingDid = localStorage.getItem("key");
+    if (!existingDid) {
+      router.push("/login");
+    }
   }
 
   const pageTabs = [
