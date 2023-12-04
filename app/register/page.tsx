@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import QuestionCircle from "../assets/QuestionCircle";
-import Logo from "../assets/Logo";
 import { contract, getContractWithSigner, provider } from "../smartContract";
 import { ethers, SigningKey } from "ethers";
 import Loading from "../assets/Loading";
 import { randomBytes } from "crypto";
 import { BytesLike } from "ethers";
+import Logo from "../assets/Logo";
 
 type Service = {
   id: string;

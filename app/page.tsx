@@ -10,6 +10,7 @@ import MagnifyingGlass from "./assets/MagnifyingGlass";
 import PageContainer from "./components/PageContainer";
 import ErrorSadFace from "./assets/ErrorSadFace";
 import ChevronRight from "./assets/ChevronRight";
+import Loading from "./assets/Loading";
 import Copy from "./assets/Copy";
 
 interface tab {
@@ -61,6 +62,7 @@ export default function VerificationCredentials() {
   ];
 
   const importRef = useRef<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [inputFocus, setInputFocus] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<tab>(tabs[0]);
   const [selectedVc, setSelectedVc] =
@@ -69,15 +71,18 @@ export default function VerificationCredentials() {
   const [importedVcs, setImportedVcs] = useState<any>([]);
 
   const generatePersonalVc = async () => {
+    setLoading(true);
     const did = localStorage.getItem("did");
     // ensure that the user has a did
     if (!did) {
+      setLoading(false);
       alert("Please register a DID first");
       return;
     }
     const didDocument = JSON.parse(localStorage.getItem("didDocument") || "");
     // ensure that the user has a did document
     if (!didDocument) {
+      setLoading(false);
       alert("Please register a DID Document first");
       return;
     }
@@ -119,9 +124,11 @@ export default function VerificationCredentials() {
       );
       console.log("tx ", tx);
       await tx.wait();
+      setLoading(false);
       alert("VC successfully generated!");
     } catch (e) {
       console.error(e);
+      setLoading(false);
       alert("VC generation failed");
     }
   };
@@ -246,6 +253,11 @@ export default function VerificationCredentials() {
               </div>
             </>
           )}
+        </div>
+      ) : loading ? (
+        <div className="w-full flex flex-row justify-center items-center px-5 py-20 space-x-5 bg-theme-medium-gray rounded-xl">
+          <Loading className="w-5 h-auto animate-spin text-white" />
+          <p>Generating . . .</p>
         </div>
       ) : personalVc ? (
         <VcDetails
