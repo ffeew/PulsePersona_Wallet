@@ -9,6 +9,7 @@ export default function Logout() {
 
   useEffect(() => {
     setTimeout(() => {
+      localStorage.clear();
       router.push("/login");
     }, 2000);
   }, [router]);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import AnimatedBackground from "./AnimatedBackground";
 import Documents from "../assets/Documents";
@@ -31,12 +32,14 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (typeof window !== "undefined") {
-    const existingDid = localStorage.getItem("key");
-    if (!existingDid) {
-      router.push("/login");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const existingDid = localStorage.getItem("did");
+      if (!existingDid && (pathname === "/" || pathname === "/settings")) {
+        router.push("/login");
+      }
     }
-  }
+  }, []);
 
   const pageTabs = [
     {

@@ -37,7 +37,7 @@ type DidDocumentData = {
 export default function Login() {
   const router = useRouter();
   const [showTooltip, setShowTooltip] = useState(false);
-  const [privateKey, setPrivateKey] = useState("");
+  const [key, setKey] = useState("");
   const [did, setDid] = useState("");
 
   const handleCredentialStorage = async (
@@ -54,7 +54,7 @@ export default function Login() {
   const getDidDocument = async (ipfsCid: any) => {
     try {
       const res = await fetch(`https://gateway.pinata.cloud/ipfs/${ipfsCid}`, {
-        method: "POST",
+        method: "GET",
       });
       const json = await res.json();
       console.log(json);
@@ -66,6 +66,7 @@ export default function Login() {
   };
 
   const handleAuthentication = async () => {
+    const privateKey = key.startsWith("0x") ? key : "0x" + key;
     // get owner of did from smart contract
     const contractAddress = pulsePersonaConfig.smartContractAddress;
     const provider = ethers.getDefaultProvider(
@@ -95,6 +96,8 @@ export default function Login() {
 
     // save to localstorage
     handleCredentialStorage(did, didDocument, privateKey);
+
+    router.push("/");
   };
 
   return (
@@ -139,7 +142,7 @@ export default function Login() {
               type="password"
               placeholder="Enter Private Key"
               className="w-full py-3 px-3 bg-[#2B2D31] rounded-lg"
-              onChange={(e) => setPrivateKey(e.target.value)}
+              onChange={(e) => setKey(e.target.value)}
             />
           </div>
           <button
