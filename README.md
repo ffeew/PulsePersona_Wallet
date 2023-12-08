@@ -49,3 +49,37 @@ npm install
 ```bash
 npm run dev
 ```
+
+### Usage Manual
+
+#### Registration
+
+![Screenshot](app/assets/images/image22.png)
+
+To register for a PulsePersona account, enter your email and your private key.
+
+#### Login
+
+![Screenshot](app/assets/images/image2.png)
+
+To login to your PulsePersona account, enter your DID and your private key.
+
+#### View account details
+
+![Screenshot](app/assets/images/image16.png)
+
+To View account details, click on the Settings tab. You can copy the did by clicking on the “copy” button or view your private key by clicking on the “view” button.
+
+#### View & Import Verifiable Credentials
+
+![Screenshot](app/assets/images/image6.png)
+
+To View Verifiable Credentials, click on the Verifiable Credentials tab. To Import Verifiable Credentials, click on the "Import" button at the top right.
+
+#### Generate Personal Verifiable Credential
+
+![Screenshot](app/assets/images/image20.png)
+
+To generate your personal Verifiable Credential, click on the “Generate” button. You will see the result below after generating, you can download or delete your VC.
+
+![Screenshot](app/assets/images/image10.png)
